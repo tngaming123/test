@@ -3,28 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Key Display</title>
+    <title>Key Page</title>
+    <script>
+        // Gửi tín hiệu đến ứng dụng C# khi trang được mở
+        function notifyApp() {
+            fetch("https://your-app-url.com/page-opened", {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ status: 'opened' })
+            });
+        }
+
+        // Đóng trang web sau một khoảng thời gian ngắn
+        function closePage() {
+            setTimeout(function() {
+                window.close();
+            }, 1000); // Đợi 1 giây trước khi đóng
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            notifyApp();
+            closePage();
+        });
+    </script>
 </head>
 <body>
-    <h1>Your Generated Key:</h1>
-    <p id="keyDisplay"></p>
-
+    <h1>Your Key:</h1>
+    <p id="key-placeholder">Loading...</p>
     <script>
-        // Get the key from the URL query parameter
-        const urlParams = new URLSearchParams(window.location.search);
-        const key = urlParams.get('key');
+        // Lấy key từ tham số URL và hiển thị
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
 
+        const key = getQueryParam('key');
         if (key) {
-            document.getElementById('keyDisplay').innerText = key;
-
-            // Create and download the file
-            const blob = new Blob([`Your Generated Key: ${key}`], { type: 'text/plain' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = 'key.txt';
-            link.click();
+            document.getElementById('key-placeholder').innerText = key;
         } else {
-            document.getElementById('keyDisplay').innerText = 'No key provided.';
+            document.getElementById('key-placeholder').innerText = 'No key provided.';
         }
     </script>
 </body>
